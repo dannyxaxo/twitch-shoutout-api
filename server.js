@@ -57,7 +57,7 @@ app.get("/clip/:username", async (req, res) => {
       return res.json({ error: "No tiene clips" });
     }
 
-    res.json({ clipId: clipData.data[0].id });
+    res.send(`https://clips.twitch.tv/${clipData.data[0].id}`);
 
   } catch (err) {
     res.json({ error: "Error interno", detail: err.message });
