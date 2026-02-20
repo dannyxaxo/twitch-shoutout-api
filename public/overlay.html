@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body {
+  margin: 0;
+  background: transparent;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+#clip {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 40px;
+  color: white;
+  text-shadow: 2px 2px 8px black;
+}
+</style>
+</head>
+<body>
+
+<div id="clip"></div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const user = params.get("user");
+
+async function getClip() {
+  const response = await fetch(`https://twitch-shoutout-api.onrender.com/clip/${user}`);
+  const data = await response.json();
+
+  if (data.clipId) {
+    document.getElementById("clip").innerHTML =
+      `<a href="https://clips.twitch.tv/${data.clipId}" target="_blank">
+      🎬 Último clip de ${user}
+      </a>`;
+  }
+}
+
+getClip();
+</script>
+
+</body>
+</html>
