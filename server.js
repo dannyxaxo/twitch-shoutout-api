@@ -2,7 +2,9 @@ import express from "express";
 import fetch from "node-fetch";
 
 const app = express();
+
 app.use(express.json());
+app.use(express.static("public"));
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
@@ -12,6 +14,7 @@ async function getAccessToken() {
     `https://id.twitch.tv/oauth2/token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&grant_type=client_credentials`,
     { method: "POST" }
   );
+
   const data = await response.json();
   return data.access_token;
 }
@@ -19,17 +22,15 @@ async function getAccessToken() {
 app.get("/clip/:username", async (req, res) => {
   try {
     const username = req.params.username;
-
     const token = await getAccessToken();
 
-    // Obtener usuario
     const userResponse = await fetch(
       `https://api.twitch.tv/helix/users?login=${username}`,
       {
         headers: {
           "Client-ID": CLIENT_ID,
-          "Authorization": `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
@@ -40,14 +41,13 @@ app.get("/clip/:username", async (req, res) => {
 
     const userId = userData.data[0].id;
 
-    // Obtener último clip
     const clipResponse = await fetch(
       `https://api.twitch.tv/helix/clips?broadcaster_id=${userId}&first=1`,
       {
         headers: {
           "Client-ID": CLIENT_ID,
-          "Authorization": `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
